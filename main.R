@@ -70,7 +70,7 @@ make_chart <- function(cat, width, height, base_size, large = FALSE, pri_limit =
 
   p <- ggplot(df_cat, aes(x = date, y = ratio)) +
     geom_hline(yintercept = offset, linetype = "dotdash", color = "black", linewidth = 0.45) +
-    geom_line(aes(color = "Podíl FX úvěrů (v %)"), linewidth = 0.8) +
+    geom_line(aes(color = "Podíl devizových úvěrů na celkovém objemu"), linewidth = 0.8) +
     geom_line(
       data = dif_scaled,
       aes(x = date, y = spread_scaled, color = "Úrokový diferenciál 3M PRIBOR – 3M EURIBOR"),
@@ -78,7 +78,7 @@ make_chart <- function(cat, width, height, base_size, large = FALSE, pri_limit =
     ) +
     scale_x_date(date_breaks = "5 years", date_labels = "%Y") +
     scale_y_continuous(
-      name   = "Podíl FX úvěrů (v %)",
+      name   = "Podíl FX (v %)",
       breaks = pri_br,
       labels = scales::percent_format(accuracy = 1),
       limits = c(0, pri_limit),
@@ -91,12 +91,12 @@ make_chart <- function(cat, width, height, base_size, large = FALSE, pri_limit =
       )
     ) +
     scale_color_manual(values = c(
-      "Podíl FX úvěrů (v %)"                       = "#153081",
+      "Podíl devizových úvěrů na celkovém objemu" = "#153081",
       "Úrokový diferenciál 3M PRIBOR – 3M EURIBOR" = "#FF4B00"
     )) +
     labs(
-      title    = if (large) paste("Podíl FX úvěrů na celkovém objemu úvěrů") else cat,
-      subtitle = "ARAD",
+      #title    = if (large) paste("Podíl FX úvěrů na celkovém objemu úvěrů") else cat,
+      #subtitle = "ARAD (Sestava 1053)",
       x        = NULL,
       color    = NULL
     ) +
@@ -104,9 +104,9 @@ make_chart <- function(cat, width, height, base_size, large = FALSE, pri_limit =
     theme(
       plot.title          = element_text(face = "bold"),
       panel.grid.minor    = element_blank(),
-      legend.position     = "bottom",
-      axis.title.y.right  = element_text(color = "#FF4B00"),
-      axis.text.y.right   = element_text(color = "#FF4B00")
+      legend.position     = "bottom"#,
+      #axis.title.y.right  = element_text(color = "#FF4B00"),
+      #axis.text.y.right   = element_text(color = "#FF4B00")
     )
 
   if (!large) {
@@ -118,8 +118,8 @@ make_chart <- function(cat, width, height, base_size, large = FALSE, pri_limit =
       )
   }
 
-  filename <- paste0("fx_ratio_", str_replace_all(cat, "[^[:alnum:]]", "_"), ".png")
-  ggsave(filename, plot = p, width = width, height = height, dpi = 200)
+  filename <- paste0("fx_ratio_", str_replace_all(cat, "[^[:alnum:]]", "_"), ".pdf")
+  ggsave(filename, plot = p, width = width, height = height, device = cairo_pdf)
   message("Saved: ", filename)
 }
 
